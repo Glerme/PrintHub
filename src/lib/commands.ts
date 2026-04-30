@@ -69,3 +69,8 @@ export function startWatching(folder: string): Promise<void> {
 export function openInSlicer(filePath: string): Promise<void> {
   return invoke('open_in_slicer', { filePath })
 }
+
+// ── Thumbnail ─────────────────────────────────────────────────────────────────
+export function saveStlThumbnail(fileId: number, pngBase64: string): Promise<void> {
+  return invoke('save_stl_thumbnail', { fileId, pngBase64 })
+}

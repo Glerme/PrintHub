@@ -68,6 +68,7 @@ pub fn run() {
             commands::files::get_file,
             commands::indexer::start_watching,
             commands::slicer::open_in_slicer,
+            commands::thumbnail::save_stl_thumbnail,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

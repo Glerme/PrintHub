@@ -52,7 +52,12 @@ export default function FileDetail() {
         <div className="flex-1 bg-zinc-900 overflow-hidden">
           <Suspense fallback={<ViewerSkeleton />}>
             {file.ext === 'stl' ? (
-              <ThreeViewer filePath={file.path} fileExt="stl" />
+              <ThreeViewer
+                filePath={file.path}
+                fileExt="stl"
+                fileId={file.id}
+                hasThumbnail={file.thumbnailPath !== null}
+              />
             ) : (
               <ThreeMFPreview file={file} />
             )}
