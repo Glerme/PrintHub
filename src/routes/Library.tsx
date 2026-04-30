@@ -1,11 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { listFiles } from '../lib/commands'
 import { useLibraryStore } from '../store/library'
+import { useReactiveCache } from '../hooks/useReactiveCache'
 import FileCard from '../components/FileCard'
 import FilterBar from '../components/FilterBar'
 import FolderTree from '../components/FolderTree'
 
 export default function Library() {
+  useReactiveCache()
+
   const { viewMode, sortBy, sortDir, search, selectedFolderId } = useLibraryStore()
 
   const { data: files = [], isLoading } = useQuery({

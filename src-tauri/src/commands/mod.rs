@@ -1,4 +1,5 @@
 pub mod files;
+pub mod indexer;
 pub mod settings;
 
 // Módulos adicionados conforme features são implementadas:

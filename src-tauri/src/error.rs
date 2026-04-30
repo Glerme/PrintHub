@@ -30,3 +30,15 @@ impl From<sqlx::Error> for AppError {
         AppError::Database(e.to_string())
     }
 }
+
+impl From<tokio::task::JoinError> for AppError {
+    fn from(e: tokio::task::JoinError) -> Self {
+        AppError::Io(e.to_string())
+    }
+}
+
+impl From<sqlx::migrate::MigrateError> for AppError {
+    fn from(e: sqlx::migrate::MigrateError) -> Self {
+        AppError::Database(e.to_string())
+    }
+}

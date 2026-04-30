@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { open } from '@tauri-apps/plugin-dialog'
 import { useNavigate } from 'react-router-dom'
-import { setSetting } from '../lib/commands'
+import { setSetting, startWatching } from '../lib/commands'
 
 export default function Onboarding() {
   const [folder, setFolder] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [status, setStatus] = useState<string>('')
   const navigate = useNavigate()
 
   async function pickFolder() {
@@ -19,10 +20,14 @@ export default function Onboarding() {
     if (!folder) return
     setSaving(true)
     try {
+      setStatus('Salvando configuração...')
       await setSetting('watched_folder_path', folder)
+      setStatus('Indexando arquivos...')
+      await startWatching(folder)
       navigate('/library')
     } finally {
       setSaving(false)
+      setStatus('')
     }
   }
 
@@ -73,7 +78,7 @@ export default function Onboarding() {
           disabled={!folder || saving}
           className="w-full py-3 rounded-lg bg-violet-600 hover:bg-violet-500 active:bg-violet-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
         >
-          {saving ? 'Salvando...' : 'Começar'}
+          {saving ? (status || 'Aguarde...') : 'Começar'}
         </button>
       </div>
     </div>

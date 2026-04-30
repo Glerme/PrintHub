@@ -51,3 +51,8 @@ export function listFiles(params: {
 export function listVirtualFolders(): Promise<VirtualFolder[]> {
   return invoke('list_virtual_folders')
 }
+
+// ── Indexer ───────────────────────────────────────────────────────────────────
+export function startWatching(folder: string): Promise<void> {
+  return invoke('start_watching', { folder })
+}
