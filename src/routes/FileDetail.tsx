@@ -3,8 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { convertFileSrc } from '@tauri-apps/api/core'
 import { toast } from 'sonner'
-import { getFile, openInSlicer, type FileItem } from '../lib/commands'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  getFile, openInSlicer, listVirtualFolders, setFileFolder, type FileItem,
+} from '../lib/commands'
 import { formatDate, formatFileSize } from '../lib/format'
+import TagPicker from '../components/TagPicker'
 
 const ThreeViewer = lazy(() => import('../components/ThreeViewer'))
 
@@ -104,7 +108,13 @@ function ThreeMFPreview({ file }: { file: FileItem }) {
 }
 
 function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () => void }) {
+  const qc = useQueryClient()
   const dateLabel = file.fileCreatedAt ? formatDate(file.fileCreatedAt) : formatDate(file.addedAt)
+
+  const { data: folders = [] } = useQuery({
+    queryKey: ['virtual_folders'],
+    queryFn: listVirtualFolders,
+  })
 
   return (
     <div className="p-4 space-y-6">
@@ -120,6 +130,27 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
         {file.estimatedFilamentG !== null && (
           <InfoRow label="Filamento estimado" value={`${file.estimatedFilamentG.toFixed(1)} g`} />
         )}
+        {/* Folder selector */}
+        <div>
+          <dt className="text-xs text-zinc-600">Pasta</dt>
+          <dd className="mt-0.5">
+            <select
+              value={file.virtualFolderId ?? 1}
+              onChange={async (e) => {
+                await setFileFolder(file.id, Number(e.target.value))
+                qc.invalidateQueries({ queryKey: ['file', file.id] })
+                qc.invalidateQueries({ queryKey: ['files'] })
+                qc.invalidateQueries({ queryKey: ['virtual_folders'] })
+              }}
+              className="text-xs bg-zinc-800 border border-zinc-700 text-zinc-300 rounded px-2 py-1 outline-none cursor-pointer w-full"
+            >
+              {folders.map((f) => (
+                <option key={f.id} value={f.id}>{f.name}</option>
+              ))}
+            </select>
+          </dd>
+        </div>
+
         {file.sourceUrl && (
           <div>
             <dt className="text-xs text-zinc-600">Origem</dt>
@@ -131,6 +162,11 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
             </dd>
           </div>
         )}
+      </section>
+
+      {/* Tags */}
+      <section>
+        <TagPicker fileId={file.id} />
       </section>
 
       {/* Print stats */}

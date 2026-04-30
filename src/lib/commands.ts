@@ -28,6 +28,12 @@ export interface VirtualFolder {
   fileCount: number
 }
 
+export interface Tag {
+  id: number
+  name: string
+  color: string | null
+}
+
 // ── Settings ─────────────────────────────────────────────────────────────────
 export function getSetting(key: string): Promise<string | null> {
   return invoke<string | null>('get_setting', { key })
@@ -58,6 +64,48 @@ export function listVirtualFolders(): Promise<VirtualFolder[]> {
 
 export function getFile(id: number): Promise<FileItem> {
   return invoke('get_file', { id })
+}
+
+// ── Folders (CRUD) ────────────────────────────────────────────────────────────
+export function createVirtualFolder(name: string, color?: string | null): Promise<VirtualFolder> {
+  return invoke('create_virtual_folder', { name, color: color ?? null })
+}
+
+export function renameVirtualFolder(id: number, name: string): Promise<void> {
+  return invoke('rename_virtual_folder', { id, name })
+}
+
+export function deleteVirtualFolder(id: number): Promise<void> {
+  return invoke('delete_virtual_folder', { id })
+}
+
+export function setFileFolder(fileId: number, folderId: number): Promise<void> {
+  return invoke('set_file_folder', { fileId, folderId })
+}
+
+// ── Tags (CRUD) ───────────────────────────────────────────────────────────────
+export function listTags(): Promise<Tag[]> {
+  return invoke('list_tags')
+}
+
+export function listFileTags(fileId: number): Promise<Tag[]> {
+  return invoke('list_file_tags', { fileId })
+}
+
+export function createTag(name: string, color?: string | null): Promise<Tag> {
+  return invoke('create_tag', { name, color: color ?? null })
+}
+
+export function addFileTag(fileId: number, tagId: number): Promise<void> {
+  return invoke('add_file_tag', { fileId, tagId })
+}
+
+export function removeFileTag(fileId: number, tagId: number): Promise<void> {
+  return invoke('remove_file_tag', { fileId, tagId })
+}
+
+export function deleteTag(id: number): Promise<void> {
+  return invoke('delete_tag', { id })
 }
 
 // ── Indexer ───────────────────────────────────────────────────────────────────

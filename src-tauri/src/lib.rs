@@ -69,6 +69,16 @@ pub fn run() {
             commands::indexer::start_watching,
             commands::slicer::open_in_slicer,
             commands::thumbnail::save_stl_thumbnail,
+            commands::folders::create_virtual_folder,
+            commands::folders::rename_virtual_folder,
+            commands::folders::delete_virtual_folder,
+            commands::folders::set_file_folder,
+            commands::tags::list_tags,
+            commands::tags::list_file_tags,
+            commands::tags::create_tag,
+            commands::tags::add_file_tag,
+            commands::tags::remove_file_tag,
+            commands::tags::delete_tag,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

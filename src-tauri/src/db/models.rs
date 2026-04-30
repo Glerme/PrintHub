@@ -30,3 +30,11 @@ pub struct VirtualFolder {
     pub color: Option<String>,
     pub file_count: i64,
 }
+
+#[derive(Debug, Serialize, FromRow)]
+#[serde(rename_all = "camelCase")]
+pub struct Tag {
+    pub id: i64,
+    pub name: String,
+    pub color: Option<String>,
+}
