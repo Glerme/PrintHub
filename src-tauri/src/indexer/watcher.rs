@@ -59,6 +59,16 @@ async fn handle_events(result: DebounceEventResult, pool: SqlitePool, app: AppHa
                     .map(|n| n.to_string_lossy().to_string())
                     .unwrap_or_default();
                 let _ = app.emit("file-added", serde_json::json!({ "id": id, "filename": filename }));
+
+                // Extract thumbnail for new 3MF files
+                if path.extension().and_then(|e| e.to_str()).map(|e| e.to_lowercase()).as_deref() == Some("3mf") {
+                    let path_str = path.to_string_lossy().to_string();
+                    let pool2 = pool.clone();
+                    let app2  = app.clone();
+                    tokio::spawn(async move {
+                        super::scanner::extract_for_file(id, &path_str, &pool2, &app2).await;
+                    });
+                }
             }
             Err(e) => log::error!("upsert_file error for {:?}: {}", path, e),
         }

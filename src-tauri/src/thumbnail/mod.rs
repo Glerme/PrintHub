@@ -1,5 +1,10 @@
-// Thumbnail cache management.
-// STL thumbnails are rendered off-screen in the frontend (react-three-fiber)
-// and written here via a Tauri command.
-// 3MF thumbnails are extracted from the ZIP by indexer/threemf.rs.
-// Cache location: app_data_dir()/thumbnails/<file_id>.png
+use std::path::{Path, PathBuf};
+
+/// Saves PNG `bytes` as `<file_id>.png` inside `dir`.
+/// Returns the absolute path where the file was written.
+pub fn save(file_id: i64, bytes: &[u8], dir: &Path) -> std::io::Result<PathBuf> {
+    std::fs::create_dir_all(dir)?;
+    let path = dir.join(format!("{file_id}.png"));
+    std::fs::write(&path, bytes)?;
+    Ok(path)
+}
