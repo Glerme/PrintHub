@@ -1,2 +1,10 @@
-// Commands will be added as features are implemented:
-// files.rs, folders.rs, tags.rs, prints.rs, filament.rs, stats.rs, slicer.rs, settings.rs
+pub mod settings;
+
+// Módulos adicionados conforme features são implementadas:
+// pub mod files;
+// pub mod folders;
+// pub mod tags;
+// pub mod prints;
+// pub mod filament;
+// pub mod stats;
+// pub mod slicer;

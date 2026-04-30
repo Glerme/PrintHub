@@ -1,13 +1,55 @@
-// Placeholder — será substituído pelo roteador (react-router-dom) com as rotas:
-// Onboarding → Library → FileDetail → Queue → Filament → Stats → Settings
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getSetting } from './lib/commands'
+
+const Onboarding = lazy(() => import('./routes/Onboarding'))
+
+// Placeholder — substituído quando a rota for implementada
+function ComingSoon({ label }: { label: string }) {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <p className="text-zinc-500 text-sm">{label} — em construção</p>
+    </div>
+  )
+}
+
+function AppRouter() {
+  const { data: watchedFolder, isLoading } = useQuery({
+    queryKey: ['setting', 'watched_folder_path'],
+    queryFn: () => getSetting('watched_folder_path'),
+  })
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  return (
+    <Suspense fallback={null}>
+      <Routes>
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/library"    element={<ComingSoon label="Library" />} />
+        <Route path="/queue"      element={<ComingSoon label="Fila de impressão" />} />
+        <Route path="/filament"   element={<ComingSoon label="Filamentos" />} />
+        <Route path="/stats"      element={<ComingSoon label="Dashboard" />} />
+        <Route path="/settings"   element={<ComingSoon label="Configurações" />} />
+        <Route
+          path="*"
+          element={<Navigate to={watchedFolder ? '/library' : '/onboarding'} replace />}
+        />
+      </Routes>
+    </Suspense>
+  )
+}
 
 export default function App() {
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-zinc-100">Print Hub</h1>
-        <p className="text-zinc-400">Scaffold pronto. Implementação em andamento.</p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
   )
 }

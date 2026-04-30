@@ -6,6 +6,11 @@
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:default",
+    "dialog:allow-open",
+    "shell:allow-open",
+    "fs:allow-read-dir",
+    "fs:allow-read-file",
+    "fs:allow-exists"
   ]
 }
