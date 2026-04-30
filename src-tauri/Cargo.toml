@@ -1,0 +1,50 @@
+[package]
+name = "print-hub"
+version = "0.1.0"
+description = "Gerenciador de arquivos STL e 3MF de impressão 3D"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "print_hub_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Tauri core
+tauri = { version = "2.11.0", features = [] }
+tauri-plugin-log = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-fs = "2"
+
+# IPC tipada — adicionados quando implementarmos os commands
+# specta = "2.0.0-rc"
+# tauri-specta = { version = "2.0.0-rc", features = ["derive", "typescript"] }
+
+# Banco de dados
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "macros", "migrate"] }
+
+# File watching
+notify = "7"
+notify-debouncer-full = "0.4"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Parsing 3MF (é um zip com XML)
+zip = "2"
+quick-xml = "0.37"
+
+# Utilitários
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+walkdir = "2"
+which = "7"
+log = "0.4"
+
+[dev-dependencies]
+tempfile = "3"
