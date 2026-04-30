@@ -1,3 +1,4 @@
+pub mod files;
 pub mod settings;
 
 // Módulos adicionados conforme features são implementadas:

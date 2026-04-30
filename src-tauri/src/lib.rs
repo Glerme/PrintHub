@@ -34,6 +34,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::settings::get_setting,
             commands::settings::set_setting,
+            commands::files::list_files,
+            commands::files::list_virtual_folders,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

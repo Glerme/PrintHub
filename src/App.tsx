@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getSetting } from './lib/commands'
 
 const Onboarding = lazy(() => import('./routes/Onboarding'))
+const Library    = lazy(() => import('./routes/Library'))
 
-// Placeholder — substituído quando a rota for implementada
 function ComingSoon({ label }: { label: string }) {
   return (
     <div className="flex h-screen items-center justify-center">
@@ -32,7 +32,7 @@ function AppRouter() {
     <Suspense fallback={null}>
       <Routes>
         <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/library"    element={<ComingSoon label="Library" />} />
+        <Route path="/library"    element={<Library />} />
         <Route path="/queue"      element={<ComingSoon label="Fila de impressão" />} />
         <Route path="/filament"   element={<ComingSoon label="Filamentos" />} />
         <Route path="/stats"      element={<ComingSoon label="Dashboard" />} />

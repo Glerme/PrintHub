@@ -1,0 +1,65 @@
+use crate::{db::models::{FileItem, VirtualFolder}, error::AppError};
+use sqlx::SqlitePool;
+use tauri::State;
+
+#[tauri::command]
+pub async fn list_files(
+    folder_id: Option<i64>,
+    search: Option<String>,
+    sort_by: Option<String>,
+    sort_dir: Option<String>,
+    pool: State<'_, SqlitePool>,
+) -> Result<Vec<FileItem>, AppError> {
+    let sort_col = match sort_by.as_deref().unwrap_or("date_added") {
+        "name"         => "f.filename",
+        "date_created" => "COALESCE(f.file_created_at, f.added_at)",
+        "ext"          => "f.ext",
+        _              => "f.added_at",
+    };
+    // Whitelist sort direction to prevent injection
+    let dir = if sort_dir.as_deref() == Some("asc") { "ASC" } else { "DESC" };
+
+    let search_pattern = search.map(|s| format!("%{s}%"));
+
+    let sql = format!(
+        r#"SELECT
+            f.id, f.filename, f.ext, f.path, f.size_bytes,
+            f.file_created_at, f.added_at, f.virtual_folder_id,
+            f.thumbnail_path, f.is_favorite,
+            (SELECT COUNT(*) FROM print_history ph WHERE ph.file_id = f.id) AS print_count
+           FROM files f
+           WHERE f.deleted_at IS NULL
+             AND (? IS NULL OR f.virtual_folder_id = ?)
+             AND (? IS NULL OR f.filename LIKE ?)
+           ORDER BY {sort_col} {dir}"#
+    );
+
+    let items = sqlx::query_as::<_, FileItem>(&sql)
+        .bind(folder_id)
+        .bind(folder_id)
+        .bind(&search_pattern)
+        .bind(&search_pattern)
+        .fetch_all(&*pool)
+        .await?;
+
+    Ok(items)
+}
+
+#[tauri::command]
+pub async fn list_virtual_folders(
+    pool: State<'_, SqlitePool>,
+) -> Result<Vec<VirtualFolder>, AppError> {
+    let folders = sqlx::query_as::<_, VirtualFolder>(
+        r#"SELECT
+            vf.id, vf.name, vf.color,
+            COUNT(f.id) AS file_count
+           FROM virtual_folders vf
+           LEFT JOIN files f ON f.virtual_folder_id = vf.id AND f.deleted_at IS NULL
+           GROUP BY vf.id
+           ORDER BY vf.id ASC"#,
+    )
+    .fetch_all(&*pool)
+    .await?;
+
+    Ok(folders)
+}

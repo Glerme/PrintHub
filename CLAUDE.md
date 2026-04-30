@@ -145,7 +145,7 @@ which = "6"
 
 ## Pontos de atenção
 
-- `src/lib/commands.ts` é **gerado automaticamente** pelo `build.rs` via tauri-specta. Não editar manualmente.
+- `src/lib/commands.ts` é **mantido manualmente** por enquanto. `tauri-specta` está comentado no `Cargo.toml` aguardando versão estável. Ao ativar tauri-specta, o arquivo passará a ser gerado automaticamente e **não deverá ser editado manualmente**. Sempre manter os tipos TS sincronizados com as structs Rust até lá.
 - STL não tem metadados embutidos — campos `estimated_print_time_min` e `estimated_filament_g` só vêm de 3MF.
 - O viewer 3D (`ThreeViewer.tsx`) é `React.lazy` + `Suspense` — só importado na rota de detalhe pra não afetar bundle inicial.
 - Moeda padrão: **BRL**. Formatação via `Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })`.
