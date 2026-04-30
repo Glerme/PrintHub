@@ -2,6 +2,15 @@ use crate::{db::models::{FileItem, VirtualFolder}, error::AppError};
 use sqlx::SqlitePool;
 use tauri::State;
 
+const FILE_SELECT: &str = r#"SELECT
+    f.id, f.filename, f.ext, f.path, f.size_bytes,
+    f.file_created_at, f.added_at, f.virtual_folder_id,
+    f.thumbnail_path, f.is_favorite,
+    f.notes, f.source_url,
+    f.estimated_print_time_min, f.estimated_filament_g,
+    (SELECT COUNT(*) FROM print_history ph WHERE ph.file_id = f.id) AS print_count
+FROM files f"#;
+
 #[tauri::command]
 pub async fn list_files(
     folder_id: Option<i64>,
@@ -16,22 +25,16 @@ pub async fn list_files(
         "ext"          => "f.ext",
         _              => "f.added_at",
     };
-    // Whitelist sort direction to prevent injection
     let dir = if sort_dir.as_deref() == Some("asc") { "ASC" } else { "DESC" };
 
     let search_pattern = search.map(|s| format!("%{s}%"));
 
     let sql = format!(
-        r#"SELECT
-            f.id, f.filename, f.ext, f.path, f.size_bytes,
-            f.file_created_at, f.added_at, f.virtual_folder_id,
-            f.thumbnail_path, f.is_favorite,
-            (SELECT COUNT(*) FROM print_history ph WHERE ph.file_id = f.id) AS print_count
-           FROM files f
-           WHERE f.deleted_at IS NULL
-             AND (? IS NULL OR f.virtual_folder_id = ?)
-             AND (? IS NULL OR f.filename LIKE ?)
-           ORDER BY {sort_col} {dir}"#
+        "{FILE_SELECT}
+         WHERE f.deleted_at IS NULL
+           AND (? IS NULL OR f.virtual_folder_id = ?)
+           AND (? IS NULL OR f.filename LIKE ?)
+         ORDER BY {sort_col} {dir}"
     );
 
     let items = sqlx::query_as::<_, FileItem>(&sql)
@@ -50,9 +53,8 @@ pub async fn list_virtual_folders(
     pool: State<'_, SqlitePool>,
 ) -> Result<Vec<VirtualFolder>, AppError> {
     let folders = sqlx::query_as::<_, VirtualFolder>(
-        r#"SELECT
-            vf.id, vf.name, vf.color,
-            COUNT(f.id) AS file_count
+        r#"SELECT vf.id, vf.name, vf.color,
+                  COUNT(f.id) AS file_count
            FROM virtual_folders vf
            LEFT JOIN files f ON f.virtual_folder_id = vf.id AND f.deleted_at IS NULL
            GROUP BY vf.id
@@ -62,4 +64,15 @@ pub async fn list_virtual_folders(
     .await?;
 
     Ok(folders)
+}
+
+#[tauri::command]
+pub async fn get_file(id: i64, pool: State<'_, SqlitePool>) -> Result<FileItem, AppError> {
+    let sql = format!("{FILE_SELECT} WHERE f.id = ? AND f.deleted_at IS NULL");
+
+    sqlx::query_as::<_, FileItem>(&sql)
+        .bind(id)
+        .fetch_optional(&*pool)
+        .await?
+        .ok_or_else(|| AppError::NotFound(format!("file {id}")))
 }

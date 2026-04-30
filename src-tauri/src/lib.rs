@@ -65,7 +65,9 @@ pub fn run() {
             commands::settings::set_setting,
             commands::files::list_files,
             commands::files::list_virtual_folders,
+            commands::files::get_file,
             commands::indexer::start_watching,
+            commands::slicer::open_in_slicer,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

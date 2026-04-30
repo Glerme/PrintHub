@@ -15,6 +15,11 @@ pub struct FileItem {
     pub thumbnail_path: Option<String>,
     pub is_favorite: i64,
     pub print_count: i64,
+    // Metadata fields (populated from 3MF extraction or user input)
+    pub notes: Option<String>,
+    pub source_url: Option<String>,
+    pub estimated_print_time_min: Option<i64>,
+    pub estimated_filament_g: Option<f64>,
 }
 
 #[derive(Debug, Serialize, FromRow)]

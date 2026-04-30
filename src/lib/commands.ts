@@ -1,5 +1,5 @@
 // Typed IPC wrappers para os Tauri commands.
-// Este arquivo é manual até adicionarmos tauri-specta para geração automática.
+// Este arquivo é mantido manualmente até tauri-specta ser ativado.
 import { invoke } from '@tauri-apps/api/core'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -15,6 +15,10 @@ export interface FileItem {
   thumbnailPath: string | null
   isFavorite: number  // 0 | 1 (SQLite boolean)
   printCount: number
+  notes: string | null
+  sourceUrl: string | null
+  estimatedPrintTimeMin: number | null
+  estimatedFilamentG: number | null
 }
 
 export interface VirtualFolder {
@@ -42,9 +46,9 @@ export function listFiles(params: {
 }): Promise<FileItem[]> {
   return invoke('list_files', {
     folderId: params.folderId ?? null,
-    search: params.search ?? null,
-    sortBy: params.sortBy ?? 'date_added',
-    sortDir: params.sortDir ?? 'desc',
+    search:   params.search ?? null,
+    sortBy:   params.sortBy ?? 'date_added',
+    sortDir:  params.sortDir ?? 'desc',
   })
 }
 
@@ -52,7 +56,16 @@ export function listVirtualFolders(): Promise<VirtualFolder[]> {
   return invoke('list_virtual_folders')
 }
 
+export function getFile(id: number): Promise<FileItem> {
+  return invoke('get_file', { id })
+}
+
 // ── Indexer ───────────────────────────────────────────────────────────────────
 export function startWatching(folder: string): Promise<void> {
   return invoke('start_watching', { folder })
+}
+
+// ── Slicer ────────────────────────────────────────────────────────────────────
+export function openInSlicer(filePath: string): Promise<void> {
+  return invoke('open_in_slicer', { filePath })
 }

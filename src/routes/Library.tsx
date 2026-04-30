@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { listFiles } from '../lib/commands'
 import { useLibraryStore } from '../store/library'
 import { useReactiveCache } from '../hooks/useReactiveCache'
@@ -8,6 +9,7 @@ import FolderTree from '../components/FolderTree'
 
 export default function Library() {
   useReactiveCache()
+  const navigate = useNavigate()
 
   const { viewMode, sortBy, sortDir, search, selectedFolderId } = useLibraryStore()
 
@@ -57,7 +59,7 @@ export default function Library() {
                   key={file.id}
                   file={file}
                   viewMode={viewMode}
-                  onClick={() => {/* FileDetail — próximo passo */}}
+                  onClick={() => navigate(`/file/${file.id}`)}
                 />
               ))}
             </div>

@@ -3,8 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getSetting } from './lib/commands'
 
-const Onboarding = lazy(() => import('./routes/Onboarding'))
-const Library    = lazy(() => import('./routes/Library'))
+const Onboarding  = lazy(() => import('./routes/Onboarding'))
+const Library     = lazy(() => import('./routes/Library'))
+const FileDetail  = lazy(() => import('./routes/FileDetail'))
 
 function ComingSoon({ label }: { label: string }) {
   return (
@@ -33,6 +34,7 @@ function AppRouter() {
       <Routes>
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/library"    element={<Library />} />
+        <Route path="/file/:id"   element={<FileDetail />} />
         <Route path="/queue"      element={<ComingSoon label="Fila de impressão" />} />
         <Route path="/filament"   element={<ComingSoon label="Filamentos" />} />
         <Route path="/stats"      element={<ComingSoon label="Dashboard" />} />
