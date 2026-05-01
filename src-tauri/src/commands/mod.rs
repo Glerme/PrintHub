@@ -3,6 +3,7 @@ pub mod files;
 pub mod folders;
 pub mod indexer;
 pub mod prints;
+pub mod queue;
 pub mod settings;
 pub mod slicer;
 pub mod tags;

@@ -5,7 +5,8 @@ import { convertFileSrc } from '@tauri-apps/api/core'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 import {
-  getFile, openInSlicer, listVirtualFolders, setFileFolder, type FileItem,
+  getFile, openInSlicer, listVirtualFolders, setFileFolder,
+  listPrintQueue, addToQueue, removeFromQueue, type FileItem,
 } from '../lib/commands'
 import { formatDate, formatFileSize } from '../lib/format'
 import TagPicker from '../components/TagPicker'
@@ -113,6 +114,12 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
   const [showForm, setShowForm] = useState(false)
   const dateLabel = file.fileCreatedAt ? formatDate(file.fileCreatedAt) : formatDate(file.addedAt)
 
+  const { data: queue = [] } = useQuery({
+    queryKey: ['print_queue'],
+    queryFn: listPrintQueue,
+  })
+  const inQueue = queue.some((q) => q.fileId === file.id)
+
   const { data: folders = [] } = useQuery({
     queryKey: ['virtual_folders'],
     queryFn: listVirtualFolders,
@@ -214,6 +221,24 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
           className="w-full py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors"
         >
           Abrir no Bambu Studio
+        </button>
+        <button
+          type="button"
+          onClick={async () => {
+            if (inQueue) {
+              await removeFromQueue(file.id)
+            } else {
+              await addToQueue(file.id)
+            }
+            qc.invalidateQueries({ queryKey: ['print_queue'] })
+          }}
+          className={`w-full py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+            inQueue
+              ? 'border-violet-700 text-violet-400 hover:bg-violet-900/20'
+              : 'border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200'
+          }`}
+        >
+          {inQueue ? '✓ Na fila · Remover' : '+ Adicionar à fila'}
         </button>
       </section>
     </div>

@@ -254,5 +254,11 @@ pub async fn soft_delete_file(path: &str, pool: &SqlitePool) -> Result<(), AppEr
         .execute(pool)
         .await?;
 
+    // Remove from print queue — soft-deleted file has no place in the queue
+    sqlx::query("DELETE FROM print_queue WHERE file_id = (SELECT id FROM files WHERE path = ?)")
+        .bind(path)
+        .execute(pool)
+        .await?;
+
     Ok(())
 }

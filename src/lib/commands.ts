@@ -137,6 +137,35 @@ export function deleteTag(id: number): Promise<void> {
   return invoke('delete_tag', { id })
 }
 
+// ── Print queue ───────────────────────────────────────────────────────────────
+export interface QueueItem {
+  queueId: number
+  fileId: number
+  position: number
+  addedAt: number
+  filename: string
+  ext: 'stl' | '3mf'
+  path: string
+  thumbnailPath: string | null
+  printCount: number
+}
+
+export function listPrintQueue(): Promise<QueueItem[]> {
+  return invoke('list_print_queue')
+}
+
+export function addToQueue(fileId: number): Promise<void> {
+  return invoke('add_to_queue', { fileId })
+}
+
+export function removeFromQueue(fileId: number): Promise<void> {
+  return invoke('remove_from_queue', { fileId })
+}
+
+export function reorderQueue(orderedIds: number[]): Promise<void> {
+  return invoke('reorder_queue', { orderedIds })
+}
+
 // ── Print history ─────────────────────────────────────────────────────────────
 export function listPrintHistory(fileId: number): Promise<PrintHistory[]> {
   return invoke('list_print_history', { fileId })

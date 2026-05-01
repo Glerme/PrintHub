@@ -33,6 +33,21 @@ pub struct VirtualFolder {
 
 #[derive(Debug, Serialize, FromRow)]
 #[serde(rename_all = "camelCase")]
+pub struct QueueItem {
+    pub queue_id: i64,
+    pub file_id: i64,
+    pub position: i64,
+    pub added_at: i64,
+    // From files join
+    pub filename: String,
+    pub ext: String,
+    pub path: String,
+    pub thumbnail_path: Option<String>,
+    pub print_count: i64,
+}
+
+#[derive(Debug, Serialize, FromRow)]
+#[serde(rename_all = "camelCase")]
 pub struct PrintHistory {
     pub id: i64,
     pub file_id: i64,
