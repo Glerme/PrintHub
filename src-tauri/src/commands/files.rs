@@ -17,6 +17,7 @@ pub async fn list_files(
     search: Option<String>,
     sort_by: Option<String>,
     sort_dir: Option<String>,
+    tag_ids: Vec<i64>,
     pool: State<'_, SqlitePool>,
 ) -> Result<Vec<FileItem>, AppError> {
     let sort_col = match sort_by.as_deref().unwrap_or("date_added") {
@@ -29,23 +30,34 @@ pub async fn list_files(
 
     let search_pattern = search.map(|s| format!("%{s}%"));
 
+    // Build optional tag filter (OR semantics: file has at least one selected tag)
+    let tag_filter = if tag_ids.is_empty() {
+        String::new()
+    } else {
+        let ph = tag_ids.iter().map(|_| "?").collect::<Vec<_>>().join(",");
+        format!("AND f.id IN (SELECT file_id FROM file_tags WHERE tag_id IN ({ph}))")
+    };
+
     let sql = format!(
         "{FILE_SELECT}
          WHERE f.deleted_at IS NULL
            AND (? IS NULL OR f.virtual_folder_id = ?)
            AND (? IS NULL OR f.filename LIKE ?)
+           {tag_filter}
          ORDER BY {sort_col} {dir}"
     );
 
-    let items = sqlx::query_as::<_, FileItem>(&sql)
+    let mut query = sqlx::query_as::<_, FileItem>(&sql)
         .bind(folder_id)
         .bind(folder_id)
         .bind(&search_pattern)
-        .bind(&search_pattern)
-        .fetch_all(&*pool)
-        .await?;
+        .bind(&search_pattern);
 
-    Ok(items)
+    for id in &tag_ids {
+        query = query.bind(id);
+    }
+
+    Ok(query.fetch_all(&*pool).await?)
 }
 
 #[tauri::command]

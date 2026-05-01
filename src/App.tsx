@@ -9,14 +9,8 @@ const FileDetail  = lazy(() => import('./routes/FileDetail'))
 const Filament    = lazy(() => import('./routes/Filament'))
 const Queue       = lazy(() => import('./routes/Queue'))
 const Stats       = lazy(() => import('./routes/Stats'))
+const Settings    = lazy(() => import('./routes/Settings'))
 
-function ComingSoon({ label }: { label: string }) {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <p className="text-zinc-500 text-sm">{label} — em construção</p>
-    </div>
-  )
-}
 
 function AppRouter() {
   const { data: watchedFolder, isLoading } = useQuery({
@@ -41,7 +35,7 @@ function AppRouter() {
         <Route path="/queue"      element={<Queue />} />
         <Route path="/filament"   element={<Filament />} />
         <Route path="/stats"      element={<Stats />} />
-        <Route path="/settings"   element={<ComingSoon label="Configurações" />} />
+        <Route path="/settings"   element={<Settings />} />
         <Route
           path="*"
           element={<Navigate to={watchedFolder ? '/library' : '/onboarding'} replace />}

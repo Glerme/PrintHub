@@ -78,12 +78,14 @@ export function listFiles(params: {
   search?: string | null
   sortBy?: 'name' | 'date_added' | 'date_created' | 'ext'
   sortDir?: 'asc' | 'desc'
+  tagIds?: number[]
 }): Promise<FileItem[]> {
   return invoke('list_files', {
     folderId: params.folderId ?? null,
     search:   params.search ?? null,
     sortBy:   params.sortBy ?? 'date_added',
     sortDir:  params.sortDir ?? 'desc',
+    tagIds:   params.tagIds ?? [],
   })
 }
 
@@ -276,6 +278,10 @@ export function toggleFilamentRoll(id: number): Promise<void> {
 // ── Indexer ───────────────────────────────────────────────────────────────────
 export function startWatching(folder: string): Promise<void> {
   return invoke('start_watching', { folder })
+}
+
+export function triggerRescan(): Promise<number> {
+  return invoke('trigger_rescan')
 }
 
 // ── Slicer ────────────────────────────────────────────────────────────────────

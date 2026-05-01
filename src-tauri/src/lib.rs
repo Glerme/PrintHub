@@ -70,6 +70,7 @@ pub fn run() {
             commands::slicer::open_in_slicer,
             commands::thumbnail::save_stl_thumbnail,
             commands::stats::get_dashboard_stats,
+            commands::indexer::trigger_rescan,
             commands::queue::list_print_queue,
             commands::queue::add_to_queue,
             commands::queue::remove_from_queue,

@@ -6,6 +6,21 @@ use sqlx::SqlitePool;
 use std::sync::Mutex;
 use tauri::{AppHandle, State};
 
+/// Triggers a manual re-scan of the configured watched folder.
+#[tauri::command]
+pub async fn trigger_rescan(pool: State<'_, SqlitePool>, app: AppHandle) -> Result<usize, AppError> {
+    use sqlx::Row;
+    let row = sqlx::query("SELECT value FROM settings WHERE key = 'watched_folder_path'")
+        .fetch_optional(&*pool)
+        .await?;
+    if let Some(row) = row {
+        if let Some(folder) = row.get::<Option<String>, _>("value") {
+            return scanner::initial_scan(&folder, &pool, &app).await;
+        }
+    }
+    Err(AppError::NotFound("pasta monitorada não configurada".into()))
+}
+
 /// Guards against starting multiple watchers (e.g., fast double-click or
 /// concurrent calls from Settings + boot task). Arc allows cloning for async tasks.
 #[derive(Clone)]

@@ -3,24 +3,28 @@ import { useNavigate, NavLink } from 'react-router-dom'
 import { listFiles } from '../lib/commands'
 import { useLibraryStore } from '../store/library'
 import { useReactiveCache } from '../hooks/useReactiveCache'
+import { useDebounce } from '../hooks/useDebounce'
 import FileCard from '../components/FileCard'
 import FilterBar from '../components/FilterBar'
 import FolderTree from '../components/FolderTree'
+import TagFilter from '../components/TagFilter'
 
 export default function Library() {
   useReactiveCache()
   const navigate = useNavigate()
 
-  const { viewMode, sortBy, sortDir, search, selectedFolderId } = useLibraryStore()
+  const { viewMode, sortBy, sortDir, search, selectedFolderId, selectedTagIds } = useLibraryStore()
+  const debouncedSearch = useDebounce(search, 300)
 
   const { data: files = [], isLoading } = useQuery({
-    queryKey: ['files', { folderId: selectedFolderId, search, sortBy, sortDir }],
+    queryKey: ['files', { folderId: selectedFolderId, search: debouncedSearch, sortBy, sortDir, tagIds: selectedTagIds }],
     queryFn: () =>
       listFiles({
         folderId: selectedFolderId,
-        search: search || null,
+        search: debouncedSearch || null,
         sortBy,
         sortDir,
+        tagIds: selectedTagIds,
       }),
     staleTime: 1000 * 10,
   })
@@ -34,6 +38,7 @@ export default function Library() {
         </div>
         <div className="py-2 flex-1 overflow-y-auto">
           <FolderTree />
+          <TagFilter />
         </div>
         {/* Bottom navigation */}
         <nav className="border-t border-zinc-800 px-2 py-2 space-y-0.5">
