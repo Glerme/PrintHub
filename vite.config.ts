@@ -9,5 +9,5 @@ export default defineConfig({
   server: {
     strictPort: true,
   },
-  envPrefix: ['VITE_', 'TAURI_'],
+  envPrefix: ['VITE_', 'TAURI_ENV_'],
 })

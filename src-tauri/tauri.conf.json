@@ -22,7 +22,7 @@
       }
     ],
     "security": {
-      "csp": null,
+      "csp": "default-src 'self' asset: http://asset.localhost; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; connect-src ipc: http://ipc.localhost ws://localhost:5173; worker-src blob:",
       "assetProtocol": {
         "enable": true,
         "scope": ["$HOME/**", "$APPDATA/**", "$LOCALAPPDATA/**"]
