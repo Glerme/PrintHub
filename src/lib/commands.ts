@@ -28,6 +28,20 @@ export interface VirtualFolder {
   fileCount: number
 }
 
+export interface FilamentRoll {
+  id: number
+  brand: string | null
+  material: string
+  colorName: string | null
+  colorHex: string | null
+  initialWeightG: number
+  remainingWeightG: number
+  cost: number | null
+  purchasedAt: number | null
+  notes: string | null
+  isActive: number // 0 | 1
+}
+
 export interface Tag {
   id: number
   name: string
@@ -106,6 +120,53 @@ export function removeFileTag(fileId: number, tagId: number): Promise<void> {
 
 export function deleteTag(id: number): Promise<void> {
   return invoke('delete_tag', { id })
+}
+
+// ── Filament ──────────────────────────────────────────────────────────────────
+export function listFilamentRolls(): Promise<FilamentRoll[]> {
+  return invoke('list_filament_rolls')
+}
+
+export function createFilamentRoll(params: {
+  brand?: string | null
+  material: string
+  colorName?: string | null
+  colorHex?: string | null
+  initialWeightG: number
+  cost?: number | null
+  notes?: string | null
+}): Promise<FilamentRoll> {
+  return invoke('create_filament_roll', {
+    brand:          params.brand ?? null,
+    material:       params.material,
+    colorName:      params.colorName ?? null,
+    colorHex:       params.colorHex ?? null,
+    initialWeightG: params.initialWeightG,
+    cost:           params.cost ?? null,
+    notes:          params.notes ?? null,
+  })
+}
+
+export function updateFilamentRoll(params: {
+  id: number
+  brand: string | null
+  material: string
+  colorName: string | null
+  colorHex: string | null
+  initialWeightG: number
+  remainingWeightG: number
+  cost: number | null
+  notes: string | null
+}): Promise<void> {
+  return invoke('update_filament_roll', params)
+}
+
+export function adjustFilamentRemaining(id: number, remainingG: number): Promise<void> {
+  return invoke('adjust_filament_remaining', { id, remainingG })
+}
+
+export function toggleFilamentRoll(id: number): Promise<void> {
+  return invoke('toggle_filament_roll', { id })
 }
 
 // ── Indexer ───────────────────────────────────────────────────────────────────

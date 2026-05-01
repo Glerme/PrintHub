@@ -1,3 +1,4 @@
+pub mod filament;
 pub mod files;
 pub mod folders;
 pub mod indexer;

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import { listFiles } from '../lib/commands'
 import { useLibraryStore } from '../store/library'
 import { useReactiveCache } from '../hooks/useReactiveCache'
@@ -32,9 +32,31 @@ export default function Library() {
         <div className="px-4 py-4 border-b border-zinc-800">
           <h1 className="text-sm font-semibold text-zinc-100 tracking-tight">🖨️ Print Hub</h1>
         </div>
-        <div className="py-2 flex-1">
+        <div className="py-2 flex-1 overflow-y-auto">
           <FolderTree />
         </div>
+        {/* Bottom navigation */}
+        <nav className="border-t border-zinc-800 px-2 py-2 space-y-0.5">
+          {[
+            { to: '/filament', icon: '🧵', label: 'Filamentos' },
+            { to: '/queue',    icon: '⏳', label: 'Fila' },
+            { to: '/stats',    icon: '📊', label: 'Dashboard' },
+            { to: '/settings', icon: '⚙️', label: 'Configurações' },
+          ].map(({ to, icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
+                  isActive ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
+                }`
+              }
+            >
+              <span className="text-base">{icon}</span>
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
       </aside>
 
       {/* Main */}

@@ -33,6 +33,22 @@ pub struct VirtualFolder {
 
 #[derive(Debug, Serialize, FromRow)]
 #[serde(rename_all = "camelCase")]
+pub struct FilamentRoll {
+    pub id: i64,
+    pub brand: Option<String>,
+    pub material: String,
+    pub color_name: Option<String>,
+    pub color_hex: Option<String>,
+    pub initial_weight_g: f64,
+    pub remaining_weight_g: f64,
+    pub cost: Option<f64>,
+    pub purchased_at: Option<i64>,
+    pub notes: Option<String>,
+    pub is_active: i64,
+}
+
+#[derive(Debug, Serialize, FromRow)]
+#[serde(rename_all = "camelCase")]
 pub struct Tag {
     pub id: i64,
     pub name: String,

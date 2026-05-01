@@ -6,6 +6,7 @@ import { getSetting } from './lib/commands'
 const Onboarding  = lazy(() => import('./routes/Onboarding'))
 const Library     = lazy(() => import('./routes/Library'))
 const FileDetail  = lazy(() => import('./routes/FileDetail'))
+const Filament    = lazy(() => import('./routes/Filament'))
 
 function ComingSoon({ label }: { label: string }) {
   return (
@@ -36,7 +37,7 @@ function AppRouter() {
         <Route path="/library"    element={<Library />} />
         <Route path="/file/:id"   element={<FileDetail />} />
         <Route path="/queue"      element={<ComingSoon label="Fila de impressão" />} />
-        <Route path="/filament"   element={<ComingSoon label="Filamentos" />} />
+        <Route path="/filament"   element={<Filament />} />
         <Route path="/stats"      element={<ComingSoon label="Dashboard" />} />
         <Route path="/settings"   element={<ComingSoon label="Configurações" />} />
         <Route
