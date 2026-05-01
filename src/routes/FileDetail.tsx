@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { convertFileSrc } from '@tauri-apps/api/core'
@@ -9,6 +9,7 @@ import {
 } from '../lib/commands'
 import { formatDate, formatFileSize } from '../lib/format'
 import TagPicker from '../components/TagPicker'
+import { PrintHistoryForm, PrintHistoryList } from '../components/PrintHistoryForm'
 
 const ThreeViewer = lazy(() => import('../components/ThreeViewer'))
 
@@ -109,6 +110,7 @@ function ThreeMFPreview({ file }: { file: FileItem }) {
 
 function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () => void }) {
   const qc = useQueryClient()
+  const [showForm, setShowForm] = useState(false)
   const dateLabel = file.fileCreatedAt ? formatDate(file.fileCreatedAt) : formatDate(file.addedAt)
 
   const { data: folders = [] } = useQuery({
@@ -169,13 +171,31 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
         <TagPicker fileId={file.id} />
       </section>
 
-      {/* Print stats */}
-      <section className="space-y-2">
-        <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Impressões</h2>
-        <p className="text-2xl font-bold text-zinc-100">{file.printCount}</p>
-        <p className="text-xs text-zinc-500">
-          {file.printCount === 0 ? 'Nunca impresso' : `${file.printCount}× impresso`}
-        </p>
+      {/* Print stats + history + form */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Impressões</h2>
+          <button
+            type="button"
+            onClick={() => setShowForm((v) => !v)}
+            className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+          >
+            {showForm ? '✕ Fechar' : '+ Registrar'}
+          </button>
+        </div>
+
+        {file.printCount > 0 && (
+          <p className="text-sm text-zinc-300">{file.printCount}× impresso</p>
+        )}
+        {file.printCount === 0 && !showForm && (
+          <p className="text-xs text-zinc-600">Nunca impresso</p>
+        )}
+
+        {showForm && (
+          <PrintHistoryForm file={file} onClose={() => setShowForm(false)} />
+        )}
+
+        <PrintHistoryList fileId={file.id} />
       </section>
 
       {/* Notes */}
@@ -194,13 +214,6 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
           className="w-full py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors"
         >
           Abrir no Bambu Studio
-        </button>
-        <button
-          type="button"
-          disabled
-          className="w-full py-2.5 rounded-lg border border-zinc-700 text-zinc-400 text-sm transition-colors disabled:opacity-40 cursor-not-allowed"
-        >
-          + Marcar como impresso
         </button>
       </section>
     </div>

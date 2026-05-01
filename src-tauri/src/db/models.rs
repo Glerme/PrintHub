@@ -33,6 +33,23 @@ pub struct VirtualFolder {
 
 #[derive(Debug, Serialize, FromRow)]
 #[serde(rename_all = "camelCase")]
+pub struct PrintHistory {
+    pub id: i64,
+    pub file_id: i64,
+    pub printed_at: i64,
+    pub actual_time_min: Option<i64>,
+    pub actual_filament_g: Option<f64>,
+    pub filament_cost: Option<f64>,
+    pub customer_name: Option<String>,
+    pub sale_value: Option<f64>,
+    pub currency: String,
+    pub filament_roll_id: Option<i64>,
+    pub notes: Option<String>,
+    pub status: String,
+}
+
+#[derive(Debug, Serialize, FromRow)]
+#[serde(rename_all = "camelCase")]
 pub struct FilamentRoll {
     pub id: i64,
     pub brand: Option<String>,

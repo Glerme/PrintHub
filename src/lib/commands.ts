@@ -28,6 +28,21 @@ export interface VirtualFolder {
   fileCount: number
 }
 
+export interface PrintHistory {
+  id: number
+  fileId: number
+  printedAt: number
+  actualTimeMin: number | null
+  actualFilamentG: number | null
+  filamentCost: number | null
+  customerName: string | null
+  saleValue: number | null
+  currency: string
+  filamentRollId: number | null
+  notes: string | null
+  status: 'success' | 'failed' | 'partial'
+}
+
 export interface FilamentRoll {
   id: number
   brand: string | null
@@ -120,6 +135,41 @@ export function removeFileTag(fileId: number, tagId: number): Promise<void> {
 
 export function deleteTag(id: number): Promise<void> {
   return invoke('delete_tag', { id })
+}
+
+// ── Print history ─────────────────────────────────────────────────────────────
+export function listPrintHistory(fileId: number): Promise<PrintHistory[]> {
+  return invoke('list_print_history', { fileId })
+}
+
+export function addPrintHistory(params: {
+  fileId: number
+  printedAt: number
+  actualTimeMin?: number | null
+  actualFilamentG?: number | null
+  filamentCost?: number | null
+  customerName?: string | null
+  saleValue?: number | null
+  filamentRollId?: number | null
+  notes?: string | null
+  status: 'success' | 'failed' | 'partial'
+}): Promise<PrintHistory> {
+  return invoke('add_print_history', {
+    fileId:           params.fileId,
+    printedAt:        params.printedAt,
+    actualTimeMin:    params.actualTimeMin ?? null,
+    actualFilamentG:  params.actualFilamentG ?? null,
+    filamentCost:     params.filamentCost ?? null,
+    customerName:     params.customerName ?? null,
+    saleValue:        params.saleValue ?? null,
+    filamentRollId:   params.filamentRollId ?? null,
+    notes:            params.notes ?? null,
+    status:           params.status,
+  })
+}
+
+export function deletePrintHistory(id: number, restoreFilament: boolean): Promise<void> {
+  return invoke('delete_print_history', { id, restoreFilament })
 }
 
 // ── Filament ──────────────────────────────────────────────────────────────────
