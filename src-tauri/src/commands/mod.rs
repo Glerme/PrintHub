@@ -6,7 +6,6 @@ pub mod prints;
 pub mod queue;
 pub mod settings;
 pub mod slicer;
+pub mod stats;
 pub mod tags;
 pub mod thumbnail;
-
-// pub mod stats;

@@ -8,6 +8,7 @@ const Library     = lazy(() => import('./routes/Library'))
 const FileDetail  = lazy(() => import('./routes/FileDetail'))
 const Filament    = lazy(() => import('./routes/Filament'))
 const Queue       = lazy(() => import('./routes/Queue'))
+const Stats       = lazy(() => import('./routes/Stats'))
 
 function ComingSoon({ label }: { label: string }) {
   return (
@@ -39,7 +40,7 @@ function AppRouter() {
         <Route path="/file/:id"   element={<FileDetail />} />
         <Route path="/queue"      element={<Queue />} />
         <Route path="/filament"   element={<Filament />} />
-        <Route path="/stats"      element={<ComingSoon label="Dashboard" />} />
+        <Route path="/stats"      element={<Stats />} />
         <Route path="/settings"   element={<ComingSoon label="Configurações" />} />
         <Route
           path="*"

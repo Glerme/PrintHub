@@ -137,6 +137,31 @@ export function deleteTag(id: number): Promise<void> {
   return invoke('delete_tag', { id })
 }
 
+// ── Dashboard stats ───────────────────────────────────────────────────────────
+export interface MonthStat    { month: string; printCount: number; revenue: number; filamentCost: number }
+export interface CustomerStat { name: string; printCount: number; totalRevenue: number }
+export interface MaterialStat { material: string; totalG: number }
+export interface LowFilamentWarning { id: number; label: string; colorHex: string | null; remainingG: number; initialG: number; pct: number }
+
+export interface DashboardStats {
+  totalPrints: number
+  successCount: number
+  failedCount: number
+  partialCount: number
+  totalRevenue: number
+  totalFilamentCost: number
+  totalFilamentG: number
+  profit: number
+  byMonth: MonthStat[]
+  topCustomers: CustomerStat[]
+  byMaterial: MaterialStat[]
+  lowFilament: LowFilamentWarning[]
+}
+
+export function getDashboardStats(fromTs?: number | null, toTs?: number | null): Promise<DashboardStats> {
+  return invoke('get_dashboard_stats', { fromTs: fromTs ?? null, toTs: toTs ?? null })
+}
+
 // ── Print queue ───────────────────────────────────────────────────────────────
 export interface QueueItem {
   queueId: number
