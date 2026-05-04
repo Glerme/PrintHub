@@ -62,6 +62,6 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: Print Hub ${{ github.ref_name }}
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
