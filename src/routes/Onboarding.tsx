@@ -37,11 +37,11 @@ export default function Onboarding() {
 
         {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-600/20 text-3xl mb-2">
-            🖨️
+          <div className="flex justify-center mb-4">
+            <img src="/logo-dark.svg" alt="Print Hub" className="h-24 w-auto" />
           </div>
           <h1 className="text-2xl font-semibold text-zinc-100 tracking-tight">
-            Bem-vindo ao Print Hub
+            Bem-vindo ao <span className="text-orange-500">Print Hub</span>
           </h1>
           <p className="text-sm text-zinc-400 leading-relaxed">
             Selecione a pasta onde seus arquivos STL e 3MF estão armazenados.

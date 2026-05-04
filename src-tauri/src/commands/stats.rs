@@ -65,9 +65,9 @@ pub async fn get_dashboard_stats(
     let summary = sqlx::query(
         r#"SELECT
             COUNT(*)                                                   AS total_prints,
-            COALESCE(SUM(sale_value), 0)                              AS total_revenue,
-            COALESCE(SUM(filament_cost), 0)                           AS total_filament_cost,
-            COALESCE(SUM(actual_filament_g), 0)                       AS total_filament_g,
+            COALESCE(SUM(sale_value), 0.0)                            AS total_revenue,
+            COALESCE(SUM(filament_cost), 0.0)                         AS total_filament_cost,
+            COALESCE(SUM(actual_filament_g), 0.0)                     AS total_filament_g,
             COALESCE(SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END), 0) AS success_count,
             COALESCE(SUM(CASE WHEN status = 'failed'  THEN 1 ELSE 0 END), 0) AS failed_count,
             COALESCE(SUM(CASE WHEN status = 'partial' THEN 1 ELSE 0 END), 0) AS partial_count
@@ -93,8 +93,8 @@ pub async fn get_dashboard_stats(
         r#"SELECT
             strftime('%Y-%m', datetime(printed_at, 'unixepoch')) AS month,
             COUNT(*)                            AS print_count,
-            COALESCE(SUM(sale_value), 0)        AS revenue,
-            COALESCE(SUM(filament_cost), 0)     AS filament_cost
+            COALESCE(SUM(sale_value), 0.0)      AS revenue,
+            COALESCE(SUM(filament_cost), 0.0)   AS filament_cost
         FROM print_history
         WHERE (? IS NULL OR printed_at >= ?)
           AND (? IS NULL OR printed_at <= ?)
@@ -117,7 +117,7 @@ pub async fn get_dashboard_stats(
     let customer_rows = sqlx::query(
         r#"SELECT customer_name AS name,
                   COUNT(*)                     AS print_count,
-                  COALESCE(SUM(sale_value), 0) AS total_revenue
+                  COALESCE(SUM(sale_value), 0.0) AS total_revenue
            FROM print_history
            WHERE customer_name IS NOT NULL
              AND (? IS NULL OR printed_at >= ?)
@@ -140,7 +140,7 @@ pub async fn get_dashboard_stats(
     // Filament used by material (from filament_rolls)
     let mat_rows = sqlx::query(
         r#"SELECT fr.material,
-                  COALESCE(SUM(ph.actual_filament_g), 0) AS total_g
+                  COALESCE(SUM(ph.actual_filament_g), 0.0) AS total_g
            FROM filament_rolls fr
            INNER JOIN print_history ph ON ph.filament_roll_id = fr.id
            WHERE (? IS NULL OR ph.printed_at >= ?)

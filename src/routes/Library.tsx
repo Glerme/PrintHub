@@ -33,8 +33,12 @@ export default function Library() {
     <div className="flex h-screen bg-zinc-950 overflow-hidden">
       {/* Sidebar */}
       <aside className="w-56 shrink-0 flex flex-col border-r border-zinc-800 bg-zinc-950 overflow-y-auto">
-        <div className="px-4 py-4 border-b border-zinc-800">
-          <h1 className="text-sm font-semibold text-zinc-100 tracking-tight">🖨️ Print Hub</h1>
+        <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-2.5">
+          <img src="/logo-icon-dark.svg" alt="" className="h-7 w-7 shrink-0" />
+          <span className="font-black text-sm tracking-wide leading-none">
+            <span className="text-zinc-100">PRINT </span>
+            <span className="text-orange-500">HUB</span>
+          </span>
         </div>
         <div className="py-2 flex-1 overflow-y-auto">
           <FolderTree />
