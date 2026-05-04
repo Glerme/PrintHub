@@ -80,11 +80,11 @@ export default function FolderTree() {
           isInbox={folder.id === INBOX_ID}
           isAll={false}
           onRename={(name) => {
-            useMutationHelper(qc, () => renameVirtualFolder(folder.id, name))
+            runMutation(qc, () => renameVirtualFolder(folder.id, name))
           }}
           onDelete={() => {
             if (folder.id === INBOX_ID) return
-            useMutationHelper(qc, () => deleteVirtualFolder(folder.id), () => {
+            runMutation(qc, () => deleteVirtualFolder(folder.id), () => {
               if (selectedFolderId === folder.id) setSelectedFolderId(null)
             })
           }}
@@ -214,9 +214,9 @@ function FolderItem({
   )
 }
 
-// ── Helper (avoids creating useMutation hooks inside callbacks) ───────────────
+// ── Helper ────────────────────────────────────────────────────────────────────
 
-function useMutationHelper(
+function runMutation(
   qc: ReturnType<typeof useQueryClient>,
   fn: () => Promise<unknown>,
   onSuccess?: () => void,

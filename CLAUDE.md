@@ -152,6 +152,11 @@ which = "6"
 
 # Regras de qualidade
 
+- **Antes de qualquer commit**, sempre rodar obrigatoriamente na ordem:
+  1. `pnpm test --run` — testes frontend (Vitest)
+  2. `cargo test` (dentro de `src-tauri/`) — testes Rust
+  3. `pnpm lint` — ESLint
+  - Só commitar se todos passarem sem erros.
 - Antes de commitar, use a skill do Codex para auditar o código
 - Use o Codex para rodar testes e simulações independentes
 - Compare os resultados das duas IAs antes de aprovar mudanças

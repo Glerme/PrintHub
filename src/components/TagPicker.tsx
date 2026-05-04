@@ -15,6 +15,10 @@ const TAG_COLORS = [
   '#06b6d4', '#6366f1', '#a855f7', '#ec4899',
 ]
 
+function randomTagColor() {
+  return TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)]
+}
+
 interface Props {
   fileId: number
 }
@@ -56,7 +60,7 @@ export default function TagPicker({ fileId }: Props) {
   async function handleCreate() {
     const name = query.trim()
     if (!name) return
-    const color = TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)]
+    const color = randomTagColor()
     const tag = await createTag(name, color)
     await addFileTag(fileId, tag.id)
     setQuery('')

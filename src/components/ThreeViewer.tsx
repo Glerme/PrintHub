@@ -18,8 +18,8 @@ function ThumbnailCapture({ fileId }: { fileId: number }) {
     if (captured.current) return
 
     // Two RAF frames: React commit → R3F render → canvas is populated
-    let raf1: number, raf2: number
-    raf1 = requestAnimationFrame(() => {
+    let raf2: number
+    const raf1 = requestAnimationFrame(() => {
       raf2 = requestAnimationFrame(() => {
         try {
           // Resize to THUMB_SIZE × THUMB_SIZE off-screen
