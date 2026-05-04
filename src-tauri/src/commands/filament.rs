@@ -17,6 +17,7 @@ pub async fn list_filament_rolls(pool: State<'_, SqlitePool>) -> Result<Vec<Fila
 }
 
 #[tauri::command]
+#[allow(clippy::too_many_arguments)]
 pub async fn create_filament_roll(
     brand: Option<String>,
     material: String,
@@ -68,6 +69,7 @@ pub async fn create_filament_roll(
 }
 
 #[tauri::command]
+#[allow(clippy::too_many_arguments)]
 pub async fn update_filament_roll(
     id: i64,
     brand: Option<String>,

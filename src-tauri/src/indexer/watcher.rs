@@ -1,5 +1,5 @@
 use super::scanner::{soft_delete_file, upsert_file};
-use notify::{EventKind, Watcher};
+use notify::EventKind;
 use notify_debouncer_full::{new_debouncer, DebounceEventResult};
 use sqlx::SqlitePool;
 use std::{path::PathBuf, time::Duration};
