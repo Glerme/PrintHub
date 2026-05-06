@@ -11,6 +11,7 @@ import {
 import { formatDate, formatFileSize } from '../lib/format'
 import TagPicker from '../components/TagPicker'
 import { PrintHistoryForm, PrintHistoryList } from '../components/PrintHistoryForm'
+import CostCalculator from '../components/CostCalculator'
 
 const ThreeViewer = lazy(() => import('../components/ThreeViewer'))
 
@@ -112,6 +113,7 @@ function ThreeMFPreview({ file }: { file: FileItem }) {
 function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () => void }) {
   const qc = useQueryClient()
   const [showForm, setShowForm] = useState(false)
+  const [showCalc, setShowCalc] = useState(false)
   const dateLabel = file.fileCreatedAt ? formatDate(file.fileCreatedAt) : formatDate(file.addedAt)
 
   const { data: queue = [] } = useQuery({
@@ -176,6 +178,27 @@ function InfoPanel({ file, onOpenSlicer }: { file: FileItem; onOpenSlicer: () =>
       {/* Tags */}
       <section>
         <TagPicker fileId={file.id} />
+      </section>
+
+      {/* Cost calculator */}
+      <section className="space-y-3">
+        <button
+          type="button"
+          onClick={() => setShowCalc(v => !v)}
+          className="flex items-center justify-between w-full text-xs font-medium text-zinc-500 uppercase tracking-wider hover:text-zinc-300 transition-colors"
+        >
+          <span>🧮 Calcular custo</span>
+          <span>{showCalc ? '▲' : '▼'}</span>
+        </button>
+        {showCalc && (
+          <CostCalculator
+            prefill={{
+              gramsUsed: file.estimatedFilamentG ?? undefined,
+              printTimeMin: file.estimatedPrintTimeMin ?? undefined,
+              fileId: file.id,
+            }}
+          />
+        )}
       </section>
 
       {/* Print stats + history + form */}
