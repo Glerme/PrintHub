@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
@@ -20,6 +20,10 @@ import {
 } from '../lib/calc'
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+
+function nowUnixSeconds() {
+  return Math.floor(Date.now() / 1000)
+}
 
 interface FilamentLine {
   id: string
@@ -79,35 +83,33 @@ export default function CostCalculator({ prefill }: CostCalculatorProps) {
     })
   }, [])
 
+  // Debounced settings persistence — all timers in one ref so cleanup reads only one ref
+  const timers = useRef<{ markup?: ReturnType<typeof setTimeout>; wattage?: ReturnType<typeof setTimeout>; kwh?: ReturnType<typeof setTimeout> }>({})
+
   // Cleanup timers on unmount
   useEffect(() => () => {
-    clearTimeout(markupTimer.current)
-    clearTimeout(wattageTimer.current)
-    clearTimeout(kwhTimer.current)
+    clearTimeout(timers.current.markup)
+    clearTimeout(timers.current.wattage)
+    clearTimeout(timers.current.kwh)
   }, [])
 
-  // Debounced settings persistence — one timer ref per setting
-  const markupTimer = useRef<ReturnType<typeof setTimeout>>()
-  const wattageTimer = useRef<ReturnType<typeof setTimeout>>()
-  const kwhTimer = useRef<ReturnType<typeof setTimeout>>()
-
-  const handleMarkupChange = useCallback((v: number) => {
+  function handleMarkupChange(v: number) {
     setMarkup(v)
-    clearTimeout(markupTimer.current)
-    markupTimer.current = setTimeout(() => setSetting('calc_markup_percent', String(v)), 500)
-  }, [])
+    clearTimeout(timers.current.markup)
+    timers.current.markup = setTimeout(() => setSetting('calc_markup_percent', String(v)), 500)
+  }
 
-  const handleWattageChange = useCallback((v: number) => {
+  function handleWattageChange(v: number) {
     setWattage(v)
-    clearTimeout(wattageTimer.current)
-    wattageTimer.current = setTimeout(() => setSetting('calc_printer_wattage', String(v)), 500)
-  }, [])
+    clearTimeout(timers.current.wattage)
+    timers.current.wattage = setTimeout(() => setSetting('calc_printer_wattage', String(v)), 500)
+  }
 
-  const handleKwhChange = useCallback((v: number) => {
+  function handleKwhChange(v: number) {
     setKwhCost(v)
-    clearTimeout(kwhTimer.current)
-    kwhTimer.current = setTimeout(() => setSetting('calc_energy_cost_kwh', String(v)), 500)
-  }, [])
+    clearTimeout(timers.current.kwh)
+    timers.current.kwh = setTimeout(() => setSetting('calc_energy_cost_kwh', String(v)), 500)
+  }
 
   // Line management
   const updateLine = (id: string, patch: Partial<FilamentLine>) =>
@@ -140,14 +142,14 @@ export default function CostCalculator({ prefill }: CostCalculatorProps) {
   const profit = calcProfit({ suggestedPrice, totalCost })
   const canSave = prefill?.fileId != null && totalCost > 0
 
-  const handleSave = async () => {
+  async function handleSave() {
     if (!canSave || prefill?.fileId == null) return
     setSaving(true)
     try {
       const totalGrams = lines.reduce((sum, l) => sum + (parseFloat(l.gramsUsed) || 0), 0)
       await addPrintHistory({
         fileId: prefill.fileId,
-        printedAt: Math.floor(Date.now() / 1000),
+        printedAt: nowUnixSeconds(),
         actualFilamentG: totalGrams > 0 ? totalGrams : null,
         actualTimeMin: printHours != null ? Math.round(printHours * 60) : null,
         filamentCost,

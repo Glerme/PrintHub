@@ -10,6 +10,7 @@ const Filament    = lazy(() => import('./routes/Filament'))
 const Queue       = lazy(() => import('./routes/Queue'))
 const Stats       = lazy(() => import('./routes/Stats'))
 const Settings    = lazy(() => import('./routes/Settings'))
+const Calculator  = lazy(() => import('./routes/Calculator'))
 
 
 function AppRouter() {
@@ -35,7 +36,8 @@ function AppRouter() {
         <Route path="/queue"      element={<Queue />} />
         <Route path="/filament"   element={<Filament />} />
         <Route path="/stats"      element={<Stats />} />
-        <Route path="/settings"   element={<Settings />} />
+        <Route path="/settings"    element={<Settings />} />
+        <Route path="/calculator"  element={<Calculator />} />
         <Route
           path="*"
           element={<Navigate to={watchedFolder ? '/library' : '/onboarding'} replace />}

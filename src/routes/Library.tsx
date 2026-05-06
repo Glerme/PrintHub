@@ -49,8 +49,9 @@ export default function Library() {
           {[
             { to: '/filament', icon: '🧵', label: 'Filamentos' },
             { to: '/queue',    icon: '⏳', label: 'Fila' },
-            { to: '/stats',    icon: '📊', label: 'Dashboard' },
-            { to: '/settings', icon: '⚙️', label: 'Configurações' },
+            { to: '/stats',      icon: '📊', label: 'Dashboard' },
+            { to: '/calculator', icon: '🧮', label: 'Calculadora' },
+            { to: '/settings',   icon: '⚙️', label: 'Configurações' },
           ].map(({ to, icon, label }) => (
             <NavLink
               key={to}
