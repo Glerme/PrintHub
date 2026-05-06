@@ -2,6 +2,7 @@ import { type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 
 const NAV_ITEMS = [
+  { to: '/library',    icon: '📁', label: 'Biblioteca' },
   { to: '/filament',   icon: '🧵', label: 'Filamentos' },
   { to: '/queue',      icon: '⏳', label: 'Fila' },
   { to: '/stats',      icon: '📊', label: 'Dashboard' },
