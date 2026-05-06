@@ -1,13 +1,13 @@
+import AppSidebar from '../components/AppSidebar'
 import CostCalculator from '../components/CostCalculator'
 
 export default function Calculator() {
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 overflow-hidden">
-      <header className="flex items-center gap-3 px-4 py-3 border-b border-zinc-800 shrink-0">
-        <span className="text-zinc-100 font-medium">Calculadora de Custo</span>
-      </header>
-      <div className="flex-1 overflow-y-auto p-4">
-        <div className="max-w-sm">
+    <div className="flex h-screen bg-zinc-950 overflow-hidden">
+      <AppSidebar />
+      <div className="flex-1 overflow-y-auto flex justify-center p-8">
+        <div className="w-full max-w-sm">
+          <h1 className="text-zinc-100 font-semibold mb-6">Calculadora de Custo</h1>
           <CostCalculator />
         </div>
       </div>

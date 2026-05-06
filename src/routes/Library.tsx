@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate, NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { listFiles } from '../lib/commands'
 import { useLibraryStore } from '../store/library'
 import { useReactiveCache } from '../hooks/useReactiveCache'
@@ -8,6 +8,7 @@ import FileCard from '../components/FileCard'
 import FilterBar from '../components/FilterBar'
 import FolderTree from '../components/FolderTree'
 import TagFilter from '../components/TagFilter'
+import AppSidebar from '../components/AppSidebar'
 
 export default function Library() {
   useReactiveCache()
@@ -31,43 +32,10 @@ export default function Library() {
 
   return (
     <div className="flex h-screen bg-zinc-950 overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-56 shrink-0 flex flex-col border-r border-zinc-800 bg-zinc-950 overflow-y-auto">
-        <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-2.5">
-          <img src="/logo-icon-dark.svg" alt="" className="h-7 w-7 shrink-0" />
-          <span className="font-black text-sm tracking-wide leading-none">
-            <span className="text-zinc-100">PRINT </span>
-            <span className="text-orange-500">HUB</span>
-          </span>
-        </div>
-        <div className="py-2 flex-1 overflow-y-auto">
-          <FolderTree />
-          <TagFilter />
-        </div>
-        {/* Bottom navigation */}
-        <nav className="border-t border-zinc-800 px-2 py-2 space-y-0.5">
-          {[
-            { to: '/filament', icon: '🧵', label: 'Filamentos' },
-            { to: '/queue',    icon: '⏳', label: 'Fila' },
-            { to: '/stats',      icon: '📊', label: 'Dashboard' },
-            { to: '/calculator', icon: '🧮', label: 'Calculadora' },
-            { to: '/settings',   icon: '⚙️', label: 'Configurações' },
-          ].map(({ to, icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                  isActive ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
-                }`
-              }
-            >
-              <span className="text-base">{icon}</span>
-              <span>{label}</span>
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
+      <AppSidebar>
+        <FolderTree />
+        <TagFilter />
+      </AppSidebar>
 
       {/* Main */}
       <div className="flex flex-col flex-1 min-w-0">
