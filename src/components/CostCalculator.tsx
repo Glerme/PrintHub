@@ -61,6 +61,7 @@ export default function CostCalculator({ prefill }: CostCalculatorProps) {
   const [wattage, setWattage] = useState(250)
   const [kwhCost, setKwhCost] = useState(0.75)
   const [markup, setMarkup] = useState(30)
+  const [saving, setSaving] = useState(false)
 
   // Load persisted settings on mount (once)
   const settingsLoaded = useRef(false)
@@ -76,6 +77,13 @@ export default function CostCalculator({ prefill }: CostCalculatorProps) {
       if (w != null) setWattage(Number(w))
       if (e != null) setKwhCost(Number(e))
     })
+  }, [])
+
+  // Cleanup timers on unmount
+  useEffect(() => () => {
+    clearTimeout(markupTimer.current)
+    clearTimeout(wattageTimer.current)
+    clearTimeout(kwhTimer.current)
   }, [])
 
   // Debounced settings persistence — one timer ref per setting
@@ -132,8 +140,6 @@ export default function CostCalculator({ prefill }: CostCalculatorProps) {
   const profit = calcProfit({ suggestedPrice, totalCost })
   const canSave = prefill?.fileId != null && totalCost > 0
 
-  const [saving, setSaving] = useState(false)
-
   const handleSave = async () => {
     if (!canSave || prefill?.fileId == null) return
     setSaving(true)
@@ -146,6 +152,8 @@ export default function CostCalculator({ prefill }: CostCalculatorProps) {
         actualTimeMin: printHours != null ? Math.round(printHours * 60) : null,
         filamentCost,
         saleValue: suggestedPrice,
+        // Only the first roll is stored in print history — DB schema has one filamentRollId per record.
+        // Cost is calculated correctly for all lines; this limitation only affects the roll reference.
         filamentRollId: lines[0]?.rollId ?? null,
         status: 'success',
       })
