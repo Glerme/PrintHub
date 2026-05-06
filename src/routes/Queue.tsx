@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import AppSidebar from '../components/AppSidebar'
 import { convertFileSrc } from '@tauri-apps/api/core'
 import { toast } from 'sonner'
 import {
@@ -68,16 +69,10 @@ export default function Queue() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950">
+    <div className="flex h-screen bg-zinc-950 overflow-hidden">
+      <AppSidebar />
+      <div className="flex flex-col flex-1 min-w-0">
       <header className="flex items-center gap-3 px-6 py-4 border-b border-zinc-800 shrink-0">
-        <button
-          type="button"
-          onClick={() => navigate('/library')}
-          className="text-zinc-400 hover:text-zinc-200 text-sm transition-colors"
-        >
-          ← Biblioteca
-        </button>
-        <span className="text-zinc-600">·</span>
         <h1 className="text-zinc-100 font-semibold">
           Fila de Impressão
           {items.length > 0 && (
@@ -110,6 +105,7 @@ export default function Queue() {
           </DndContext>
         )}
       </main>
+      </div>
     </div>
   )
 }

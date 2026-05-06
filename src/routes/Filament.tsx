@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import AppSidebar from '../components/AppSidebar'
 import {
   listFilamentRolls,
   createFilamentRoll,
@@ -13,7 +13,6 @@ const MATERIALS = ['PLA', 'PETG', 'ABS', 'ASA', 'TPU', 'PLA-CF', 'PETG-CF', 'Nyl
 const COLORS_HEX = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#6366f1','#a855f7','#ec4899','#f9fafb','#18181b']
 
 export default function Filament() {
-  const navigate = useNavigate()
   const qc = useQueryClient()
   const [creating, setCreating] = useState(false)
   const [editing, setEditing] = useState<FilamentRoll | null>(null)
@@ -27,16 +26,10 @@ export default function Filament() {
   const archived = rolls.filter((r) => r.isActive === 0)
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950">
+    <div className="flex h-screen bg-zinc-950 overflow-hidden">
+      <AppSidebar />
+      <div className="flex flex-col flex-1 min-w-0">
       <header className="flex items-center gap-3 px-6 py-4 border-b border-zinc-800 shrink-0">
-        <button
-          type="button"
-          onClick={() => navigate('/library')}
-          className="text-zinc-400 hover:text-zinc-200 text-sm transition-colors"
-        >
-          ← Biblioteca
-        </button>
-        <span className="text-zinc-600">·</span>
         <h1 className="text-zinc-100 font-semibold">Filamentos</h1>
         <div className="ml-auto">
           <button
@@ -107,6 +100,7 @@ export default function Filament() {
             />
           </aside>
         )}
+      </div>
       </div>
     </div>
   )

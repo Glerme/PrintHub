@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts'
 import { getDashboardStats } from '../lib/commands'
 import { formatCurrency } from '../lib/format'
+import AppSidebar from '../components/AppSidebar'
 
 // ── Date range presets ────────────────────────────────────────────────────────
 
@@ -28,7 +28,6 @@ function rangeToTs(range: Range): [number | null, number | null] {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function Stats() {
-  const navigate = useNavigate()
   const [range, setRange] = useState<Range>('all')
   const [from, to] = rangeToTs(range)
 
@@ -38,13 +37,10 @@ export default function Stats() {
   })
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950">
+    <div className="flex h-screen bg-zinc-950 overflow-hidden">
+      <AppSidebar />
+      <div className="flex flex-col flex-1 min-w-0">
       <header className="flex items-center gap-3 px-6 py-4 border-b border-zinc-800 shrink-0">
-        <button type="button" onClick={() => navigate('/library')}
-          className="text-zinc-400 hover:text-zinc-200 text-sm transition-colors">
-          ← Biblioteca
-        </button>
-        <span className="text-zinc-600">·</span>
         <h1 className="text-zinc-100 font-semibold">Dashboard</h1>
 
         {/* Range selector */}
@@ -187,6 +183,7 @@ export default function Stats() {
           )}
         </main>
       )}
+      </div>
     </div>
   )
 }
