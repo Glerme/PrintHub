@@ -7,7 +7,7 @@ import {
   calcEnergyCost,
   calcTotalCost,
   calcSuggestedPrice,
-  calcMargin,
+  calcProfit,
   rollPricePerKg,
 } from './calc'
 
@@ -88,12 +88,12 @@ describe('calcSuggestedPrice', () => {
   })
 })
 
-describe('calcMargin', () => {
-  it('calculates margin: R$13 - R$10 = R$3', () => {
-    expect(calcMargin({ suggestedPrice: 13, totalCost: 10 })).toBeCloseTo(3)
+describe('calcProfit', () => {
+  it('calculates profit: R$13 - R$10 = R$3', () => {
+    expect(calcProfit({ suggestedPrice: 13, totalCost: 10 })).toBeCloseTo(3)
   })
-  it('margin is 0 when no markup', () => {
-    expect(calcMargin({ suggestedPrice: 10, totalCost: 10 })).toBeCloseTo(0)
+  it('profit is 0 when no markup', () => {
+    expect(calcProfit({ suggestedPrice: 10, totalCost: 10 })).toBeCloseTo(0)
   })
 })
 

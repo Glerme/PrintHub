@@ -6,6 +6,7 @@ export function formatMinutesToTimeInput(minutes: number): string {
   return `${h}h ${m}m`
 }
 
+/** Returns duration in decimal hours, or null if input is invalid or non-positive. */
 export function parseTimeInput(input: string): number | null {
   const trimmed = input.trim()
   if (!trimmed) return null
@@ -31,6 +32,7 @@ export function parseTimeInput(input: string): number | null {
   return null
 }
 
+/** Inputs must be non-negative. */
 export function calcFilamentLineCost({
   gramsUsed,
   pricePerKg,
@@ -47,6 +49,7 @@ export function calcTotalFilamentCost(
   return lines.reduce((sum, l) => sum + calcFilamentLineCost(l), 0)
 }
 
+/** Inputs must be non-negative. */
 export function calcEnergyCost({
   printHours,
   printerWattage,
@@ -79,7 +82,7 @@ export function calcSuggestedPrice({
   return totalCost * (1 + markupPercent / 100)
 }
 
-export function calcMargin({
+export function calcProfit({
   suggestedPrice,
   totalCost,
 }: {
