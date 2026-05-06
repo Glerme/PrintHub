@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Print Hub",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "identifier": "com.printhub.app",
   "build": {
     "frontendDist": "../dist",
@@ -22,7 +22,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self' asset: http://asset.localhost; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; connect-src ipc: http://ipc.localhost ws://localhost:5173; worker-src blob:",
+      "csp": "default-src 'self' asset: http://asset.localhost; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; connect-src ipc: http://ipc.localhost ws://localhost:5173 asset: http://asset.localhost; worker-src blob:",
       "assetProtocol": {
         "enable": true,
         "scope": ["$HOME/**", "$APPDATA/**", "$LOCALAPPDATA/**"]
